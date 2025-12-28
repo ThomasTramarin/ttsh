@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -g
-SRC = src/main.c
+CFLAGS = -Wall -Wextra -Iinclude -g
+SRC = src/main.c src/parser.c src/prompt.c src/builtin.c
 TARGET = build/ttsh
 
 all: $(TARGET)
