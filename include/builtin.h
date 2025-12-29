@@ -13,4 +13,10 @@ void builtin_help_help();
 int builtin_exit(int argc, char **argv);
 void builtin_exit_help();
 
+int builtin_cd(int argc, char **argv);
+void builtin_cd_help();
+
+int builtin_pwd(int argc, char **argv);
+void builtin_pwd_help();
+
 #endif

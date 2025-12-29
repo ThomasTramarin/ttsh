@@ -1,7 +1,10 @@
 #include "builtin.h"
+#include <linux/limits.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 struct builtin_entry {
     const char *name;  // command name
@@ -13,7 +16,8 @@ struct builtin_entry {
 static struct builtin_entry builtins[] = {
     {"help", builtin_help, builtin_help_help},
     {"exit", builtin_exit, builtin_exit_help},
-};
+    {"cd", builtin_cd, builtin_cd_help},
+    {"pwd", builtin_pwd, builtin_pwd_help}};
 
 #define BUILTIN_COUNT (sizeof(builtins) / sizeof(builtins[0]))
 
@@ -102,4 +106,62 @@ void builtin_exit_help() {
         "EXAMPLES:\n"
         "   exit\n"
         "   exit 2\n");
+}
+
+// ========== CD BUILTIN ==========
+int builtin_cd(int argc, char **argv) {
+    const char *dir;
+
+    if (argc == 1) { // enter the user home dir (fallback /)
+        dir = getenv("HOME");
+        if (!dir)
+            dir = "/";
+    } else if (argc == 2) {
+        dir = argv[1];
+    } else {
+        fprintf(stderr, "ttsh - usage: cd [path]\n");
+        return 1;
+    }
+
+    if (chdir(dir) != 0) {
+        perror("ttsh - cd");
+        return 1;
+    }
+
+    return 0;
+}
+
+void builtin_cd_help() {
+    printf(
+        "cd [path]\n"
+        "Change the shell working directory.\n"
+        "If the path is provided, try to enter that path, otherwise cd sets the pwd\n"
+        "to the user home directory\n"
+        "EXAMPLES:\n"
+        "   cd path/\n"
+        "   cd\n");
+}
+
+// ========== PWD BUILTIN ==========
+int builtin_pwd(int argc, char **argv) {
+    if (argc != 1) {
+        fprintf(stderr, "ttsh - usage: pwd\n");
+        return 1;
+    }
+
+    char cwd[PATH_MAX];
+
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("%s\n", cwd);
+        return 0;
+    } else {
+        perror("ttsh - pwd");
+        return 1;
+    }
+}
+void builtin_pwd_help() {
+    printf(
+        "pwd\n"
+        "Print the current working directory.\n"
+        "EXAMPLE:\n");
 }
