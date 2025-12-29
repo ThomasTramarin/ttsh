@@ -33,10 +33,11 @@ int main() {
             } else {
                 last_status = res;
             }
-        }
+        } else {
 
-        // TODO: continue with the logic
-        fprintf(stderr, "ttsh - command not found: %s\n", args[0]);
+            // TODO: continue with the logic
+            fprintf(stderr, "ttsh - command not found: %s\n", args[0]);
+        }
 
         free(line);
     }
