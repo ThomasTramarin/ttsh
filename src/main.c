@@ -1,4 +1,5 @@
 #include "builtin.h"
+#include "external.h"
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,8 +36,7 @@ int main() {
             }
         } else {
 
-            // TODO: continue with the logic
-            fprintf(stderr, "ttsh - command not found: %s\n", args[0]);
+            last_status = run_external(argc, args);
         }
 
         free(line);
